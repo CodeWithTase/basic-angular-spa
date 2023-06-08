@@ -1,62 +1,36 @@
 import { Injectable } from '@angular/core';
 import { IProduct } from './product';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, catchError, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  getProducts(): IProduct[] {
-    return [
-      {
-        productId: 1,
-        productName: 'Android App',
-        productCode: 'GDN-0011',
-        releaseDate: 'March 19, 2021',
-        description: 'Start building Android Apps today',
-        price: 400.95,
-        starRating: 3.2,
-        imageUrl: 'assets/images/android_app.jpg',
-      },
-      {
-        productId: 2,
-        productName: 'IOS App',
-        productCode: 'GDN-0023',
-        releaseDate: 'March 18, 2021',
-        description: 'Start building IOS Apps today',
-        price: 400.99,
-        starRating: 4.2,
-        imageUrl: 'assets/images/apple_app.jpg',
-      },
-      {
-        productId: 5,
-        productName: 'Cross Platform App',
-        productCode: 'GDN-0011',
-        releaseDate: 'May 21, 2021',
-        description: 'Start building IOS Apps today',
-        price: 1400.96,
-        starRating: 4.8,
-        imageUrl: 'assets/images/cross_platform_app.jpg',
-      },
-      {
-        productId: 8,
-        productName: 'CRM Solution',
-        productCode: 'TBX-0022',
-        releaseDate: 'May 15, 2021',
-        description: 'Discover the best CRM Software for your organisation.',
-        price: 501.55,
-        starRating: 3.7,
-        imageUrl: 'assets/images/crm_solution.jpg',
-      },
-      {
-        productId: 9,
-        productName: 'Website',
-        productCode: 'TBX-0022',
-        releaseDate: 'May 15, 2021',
-        description: 'Create your website and grow with confidence',
-        price: 456.55,
-        starRating: 3.7,
-        imageUrl: 'assets/images/website.jpg',
-      },
-    ];
+  private productUrl = 'api/products/products.json';
+
+  constructor(private http: HttpClient) {}
+
+  getProducts(): Observable<IProduct[]> {
+    return this.http.get<IProduct[]>(this.productUrl).pipe(
+        tap(data => console.log('All: ', JSON.stringify(data))),
+        catchError(this.handleError)
+    );
+  }
+
+  private handleError(err: HttpErrorResponse): Observable<never> {
+    // in a real world app, we may send the server to some remote logging infrastructure
+    // instead of just logging it to the console
+    let errorMessage = '';
+    if (err.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      errorMessage = `An error occurred: ${err.error.message}`;
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong,
+      errorMessage = `Server returned code: ${err.status}, error message is: ${err.message}`;
+    }
+    console.error(errorMessage);
+    return throwError(() => errorMessage);
   }
 }
