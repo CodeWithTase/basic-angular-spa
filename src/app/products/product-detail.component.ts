@@ -1,33 +1,46 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IProduct } from './product';
+import { Subscription } from 'rxjs';
+import { ProductService } from './product.service';
 
 @Component({
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css'],
 })
-export class ProductDetailComponent implements OnInit {
+export class ProductDetailComponent implements OnInit, OnDestroy {
   pageTitle: string = 'Product Detail';
   product: IProduct | undefined;
+  imageWidth: number = 500;
+  imageMargin: number = 10;
+  sub!: Subscription;
+  errorMessage: string = '';
+  id: number = 0;
+  rating: number = 0;
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private productService: ProductService
+  ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.pageTitle += `: ${id}`;
-    this.product = {
-      productId: 1,
-      productName: 'Android App',
-      productCode: 'GDN-0011',
-      releaseDate: 'March 19, 2021',
-      description: 'Start building Android Apps today',
-      price: 400.95,
-      starRating: 3.2,
-      imageUrl: 'assets/images/android_app.jpg',
-    };
+    this.id = Number(this.route.snapshot.paramMap.get('id'));
+    this.pageTitle += `: ${this.id}`;
+    this.sub = this.productService.getProducts().subscribe({
+      next: (products) => {
+        this.product = products.find((p) => p.productId === this.id);
+        this.rating = this.product !== undefined ? this.product.starRating : 0;
+      },
+      error: (err) => (this.errorMessage = err),
+    });
   }
 
-  onBack(): void{
+  onBack(): void {
     this.router.navigate(['/products']);
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 }

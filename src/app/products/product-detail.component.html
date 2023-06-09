@@ -4,8 +4,46 @@
   </div>
   <div class="container">
     <div class="row">
-      <div class="col-sm">One of three columns</div>
-      <div class="col-sm">One of three columns</div>
+      <div class="col-sm">
+        <img
+          [src]="product?.imageUrl"
+          [title]="product?.productName"
+          [style.width.px]="imageWidth"
+          [style.margin.px]="imageMargin"
+        />
+      </div>
+      <div class="col-sm">
+        <div class="clearfix">
+          <div class="pull-right">
+            <span class="h2"
+              ><strong>{{
+                product?.price | currency : "GBP" : "symbol" : "1.2-2"
+              }}</strong></span
+            >
+          </div>
+          <span class="h4">
+            <strong class="text-success">{{ product?.productName }}</strong
+            ><br />
+            <small>{{ product?.releaseDate }}</small>
+          </span>
+        </div>
+        <hr />
+        <p>
+          Sed porttitor pretium venenatis. Suspendisse potenti. Aliquam quis
+          ligula elit. Aliquam at orci ac neque semper dictum. Sed tincidunt
+          scelerisque ligula, et facilisis nulla hendrerit non. Suspendisse
+          potenti. Pellentesque non accumsan orci.
+        </p>
+        <p>
+          Sed porttitor pretium venenatis. Suspendisse potenti. Aliquam quis
+          ligula elit. Aliquam at orci ac neque semper dictum. Sed tincidunt
+          scelerisque ligula, et facilisis nulla hendrerit non. Suspendisse
+          potenti. Pellentesque non accumsan orci.
+        </p>
+        <hr />
+        <pm-star [rating]="rating"></pm-star>
+        <button type="submit" class="btn btn-info">Add to Cart</button>
+      </div>
     </div>
     <div class="card-footer">
       <button
