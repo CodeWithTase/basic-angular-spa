@@ -12,7 +12,7 @@ export class ProductListComponenet implements OnInit, OnDestroy {
   pageTitle: string = 'Product List';
   imageWidth: number = 100;
   imageMargin: number = 2;
-  showImage: boolean = false;
+  showImage: boolean = true;
   errorMessage: string = '';
   sub!: Subscription;
 
